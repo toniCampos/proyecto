@@ -53,6 +53,7 @@ $router->delete('/like/{id}', ["uses" => "LikeController@deleteLike"]);
 
 //global
 $router->get('/all/{id}', ["uses" => "PostController@postCommentsLikes"]);
+$router->post('/tests', ["uses" => "LikeController@forTests"]);
 
 
 $router->post('/login', ["uses" => "UserController@login"]);

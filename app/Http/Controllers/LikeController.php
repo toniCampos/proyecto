@@ -20,21 +20,34 @@ class LikeController extends BaseController
         return response()->json($like, 200);
     }
 
+    public function forTests(Request $request)
+    {
+    	$data = $request->json()->all();
+    	$postLikes = count(Like::where(["post_id"=>$data["post_id"], "user_id"=>$data["user_id"]])->get());
+        return response()->json($postLikes, 418);
+    }
+
     public function createPostLike(Request $request)
     {
         $data = $request->json()->all();
         try
         {
-            $like = Like::create([
-                "user_id" => $data["user_id"],
-                "post_id" => $data["post_id"]
-            ]);
-            return response()->json($like, 201);
+        	$postLikes = count(Like::where(["post_id"=>$data["post_id"], "user_id"=>$data["user_id"]])->get());
+        	if($postLikes==0)
+        	{
+	            $like = Like::create([
+	                "user_id" => $data["user_id"],
+	                "post_id" => $data["post_id"]
+	            ]);
+	            return response()->json($like, 201);
+        	}
+        	$respuesta = array("error" => "ya diste like amigo", "codigo" => 406);
+            Return response()->json($respuesta, 406);
         }
         catch (\Illuminate\Database\QueryException $e)
         {
             $respuesta = array("error" => $e->errorInfo, "codigo" => 500);
-            Return response()->json($respuesta, 201);
+            Return response()->json($respuesta, 500);
         }
     }
 
@@ -43,6 +56,19 @@ class LikeController extends BaseController
         $data = $request->json()->all();
         try
         {
+
+        	$commentLikes = count(Like::where(["comment_id"=>$data["comment_id"], "user_id"=>$data["user_id"]])->get());
+        	if($commentLikes==0)
+        	{
+	            $like = Like::create([
+	                "user_id" => $data["user_id"],
+	                "comment_id" => $data["comment_id"]
+	            ]);
+	            return response()->json($like, 201);
+        	}
+        	$respuesta = array("error" => "ya diste like amigo", "codigo" => 406);
+            Return response()->json($respuesta, 406);
+
             $like = Like::create([
                 "user_id" => $data["user_id"],
                 "comment_id" => $data["comment_id"]
